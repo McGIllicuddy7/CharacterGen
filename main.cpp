@@ -59,8 +59,17 @@ bool get_innate_caster(){
   }
   return false;
 }
-int main(void) {
+//calling convention
+int called(int argc, const char ** argv){
+  return 0;
+}
+
+int main(int argc, const char ** argv) {
   // insert code here...
+  printf("%d\n", argc);
+  if(argc>1){
+    return called(argc, argv);
+  }
 chargen: 
   printf("enter level: ");
   ENPC_Type npc_type;

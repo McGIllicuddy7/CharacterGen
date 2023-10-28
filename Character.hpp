@@ -126,5 +126,6 @@ NPC_T * CreateNPC(ENPC_Type T,int Level, bool InnateCaster, MagicTypes_t MagicTy
 NPC_T * CreateNPC_From_Template(CharacterTemplate_t temp,int level, NPC_Strength_t str);
 void DestroyNPC(NPC_T* NPC);
 void PrintNpc(FILE * f,NPC_T * NPC);
+std::string NPC_toString(NPC_T * NPC);
 vector<string> GeneratePersonality(void);
 #endif /* Character_h */

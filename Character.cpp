@@ -63,7 +63,7 @@ int calculate_ac_and_per_bonus(int Level){
   int numexpert = Level/5*(Level>4);
   int nummastered = Level/10 * (Level>9);
   int numLegendary = Level/15 *(Level>14);
-  return 2*((numexpert>0)+(nummastered>0)+(numLegendary>0)+1);
+  return 2*((numexpert>0)+(nummastered>0)+(numLegendary>0)+1)+Level;
 }
 void WeaponCalculation(NPC_T * out,MartialTypes_t Mt){
   if(Mt == MartialNONE){
@@ -301,7 +301,18 @@ int CalculateSkillMod(int index, NPC_T * out,AbilityScores Score, vector<int> Tr
   if(Score == Charisma){
     base += CalculateModifier(out->Charisma);
   }
-  base += (2+out->Level)*IntArrayContains(TrainedSkills, index)+(4+out->Level)*IntArrayContains(ExpertSkills, index)+(6+out->Level)*IntArrayContains(MasteredSkills, index)+(8+out->Level)*IntArrayContains(LegendarySkills,index);
+  if(IntArrayContains(LegendarySkills,index)){
+    base += 8+out->Level;
+  }
+  else if(IntArrayContains(MasteredSkills,index)){
+    base += 6+out->Level;
+  }
+  else if(IntArrayContains(ExpertSkills,index)){
+    base += 4+out->Level;
+  }
+  else if(IntArrayContains(TrainedSkills,index)){
+    base += 2+out->Level;
+  }
   return base;
 }
 #define SetUpSkills(NPC, T, Ability) NPC->T = CalculateSkillMod(T,out, Ability, TrainedSkills,ExpertSkills, MasteredSkills, LegendarySkills)
@@ -437,7 +448,7 @@ void GenerateLaborer(NPC_T * Out, int Level){
   Out->Charisma= MediumAbilityScore();
   Out->MagicType =MagicNONE;
   Out->SpecialFeaturesAndAbilities =GetLaborerAbilities(Level);
-  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
   Out->HitPoints = (9+CalculateModifier(Out->Constitution))*Level;
   Out->ReflexSave = 2+CalculateModifier(Out->Dexterity)+Level;
   Out->FortitudeSave = 4+CalculateModifier(Out->Constitution)+Level;
@@ -459,7 +470,7 @@ void GenerateMerchant(NPC_T * Out, int Level){
   Out->Charisma= HighAbilityScore();
   Out->MagicType =MagicNONE;
   Out->SpecialFeaturesAndAbilities = GetMerchantAbilities(Level);
-  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
   Out->HitPoints = (6+CalculateModifier(Out->Constitution))*Level;
   int numSkills = rand()%4+2;
   int numexpert = Level/5*(Level>4);
@@ -480,7 +491,7 @@ void GenerateNoble(NPC_T * Out, int Level){
   Out->Charisma= HighAbilityScore();
   Out->MagicType = MagicNONE;
   Out->SpecialFeaturesAndAbilities = GetNobleAbilities(Level);
-  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
   Out->HitPoints = (6+CalculateModifier(Out->Constitution))*Level;
   Out->ReflexSave = 2+CalculateModifier(Out->Dexterity)+Level;
   Out->FortitudeSave = 2+CalculateModifier(Out->Constitution)+Level;
@@ -501,7 +512,7 @@ void GenerateFighter(NPC_T * Out, int Level,MartialTypes_t MartialType){
     Out->Intelligence = MediumAbilityScore();
     Out->Wisdom= HighAbilityScore();
     Out->Charisma= HighAbilityScore();
-    Out->ArmorClass  = 18+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+    Out->ArmorClass  = 15+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
     Out->HitPoints = (10+CalculateModifier(Out->Constitution))*Level;
   }
   if(MartialType == DisorganizedMelle){
@@ -511,7 +522,7 @@ void GenerateFighter(NPC_T * Out, int Level,MartialTypes_t MartialType){
     Out->Intelligence = MediumAbilityScore();
     Out->Wisdom= MediumAbilityScore();
     Out->Charisma= MediumAbilityScore();
-    Out->ArmorClass  = 15+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+    Out->ArmorClass  = 15+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
     Out->HitPoints = (12+CalculateModifier(Out->Constitution))*Level;
   }
   if(MartialType == OrganizedRanged){
@@ -521,7 +532,7 @@ void GenerateFighter(NPC_T * Out, int Level,MartialTypes_t MartialType){
     Out->Intelligence = MediumAbilityScore();
     Out->Wisdom= HighAbilityScore();
     Out->Charisma= HighAbilityScore();
-    Out->ArmorClass  = 13+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+    Out->ArmorClass  = 13+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
     Out->HitPoints = (8+CalculateModifier(Out->Constitution))*Level;
   }
   if(MartialType == DisorganizedRanged){
@@ -531,7 +542,7 @@ void GenerateFighter(NPC_T * Out, int Level,MartialTypes_t MartialType){
     Out->Intelligence = MediumAbilityScore();
     Out->Wisdom= MediumAbilityScore();
     Out->Charisma= MediumAbilityScore();
-    Out->ArmorClass  = 12+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+    Out->ArmorClass  = 12+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
     Out->HitPoints = (10+CalculateModifier(Out->Constitution))*Level;
   }
   Out->ReflexSave = 2+CalculateModifier(Out->Dexterity)+Level;
@@ -554,7 +565,7 @@ void GenerateGish(NPC_T * Out, int Level,MartialTypes_t MartialType,MagicTypes_t
   Out->MagicType = MagicType;
   Out->SpecialFeaturesAndAbilities = GetGishAbilities(Level, MagicType, MartialType);
   GenerateSpells(Out);
-  Out->ArmorClass  = 15+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+  Out->ArmorClass  = 15+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
   Out->HitPoints = (9+CalculateModifier(Out->Constitution))*Level;
   int numSkills = rand()%4+2;
   int numexpert = Level/5*(Level>4);
@@ -574,7 +585,7 @@ void GenerateMagicUser(NPC_T * Out, int Level, MagicTypes_t MagicType){
   Out->MagicType = MagicType;
   Out->SpecialFeaturesAndAbilities = GetMagicUserAbilities(Level, MagicType);
   GenerateSpells(Out);
-  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);;
+  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);;
   Out->HitPoints = (6+CalculateModifier(Out->Constitution))*Level;
   int numSkills = rand()%4+2;
   int numexpert = Level/5*(Level>4);
@@ -595,7 +606,7 @@ void GenerateMagicUsingThief(NPC_T * Out, int Level,MagicTypes_t MagicType){
   Out->MagicType = MagicType;
   Out->SpecialFeaturesAndAbilities = GetMagicUsingThiefAbilities(Level, OrganizedMelle, MagicType);
   GenerateSpells(Out);
-  Out->ArmorClass  = 11+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+  Out->ArmorClass  = 11+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
   Out->HitPoints = (7+CalculateModifier(Out->Constitution))*Level;
   int numSkills = rand()%4+2;
   int numexpert = Level/5*(Level>4);
@@ -617,7 +628,7 @@ void GeneratePriest(NPC_T * Out, int Level){
   Out->MagicType =MagicNONE;
   Out->SpecialFeaturesAndAbilities = GetPriestAbilities(Level);
   GenerateSpells(Out);
-  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+  Out->ArmorClass  = 10+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
   Out->HitPoints = (8+CalculateModifier(Out->Constitution))*Level;
   int numSkills = rand()%4+2;
   int numexpert = Level/5*(Level>4);
@@ -637,7 +648,7 @@ void GenerateThief(NPC_T * Out, int Level){
   Out->Wisdom= MediumAbilityScore();
   Out->Charisma= HighAbilityScore();
   Out->MagicType = MagicNONE;
-  Out->ArmorClass  = 12+CalculateModifier(Out->Dexterity)+Level+calculate_ac_and_per_bonus(Level);
+  Out->ArmorClass  = 12+CalculateModifier(Out->Dexterity)+calculate_ac_and_per_bonus(Level);
   Out->HitPoints = (8+CalculateModifier(Out->Constitution))*Level;
   int numSkills = rand()%4+2;
   int numexpert = Level/5*(Level>4);
@@ -786,6 +797,9 @@ void PrintNpc(FILE * f,NPC_T * NPC){
   }
   for(int i =0; i<NPC->SpellBook.size(); i++){
     fprintf(f,"%s,", NPC->SpellBook[i].c_str());
+    if(i%7 == 0){
+      fprintf(f, "\n");
+    }
   }
   fprintf(f,"\n");
 }
@@ -916,6 +930,10 @@ std::string NPC_toString(NPC_T * NPC){
   for(int i =0; i<NPC->SpellBook.size(); i++){
     snprintf(f,1000,"%s,", NPC->SpellBook[i].c_str());
     line_done();
+    if(i%7 == 0){
+      snprintf(f,1000,"\n");
+      line_done();
+    }
   }
   return out;
 }

@@ -59,22 +59,17 @@ bool get_innate_caster(){
   }
   return false;
 }
-//calling convention, level, class, martial_type, magic_type,caster_type
+//calling convention: class level martial_type magic_type caster_types
 int called(int argc, const char ** argv){
   int counter = 1;
-  string a = argv[counter];
-  if(a == "help" || a == "--help" || a == "-help"){
-    printf("calling convention: level class martial_type magic_type caster_types");
+  ENPC_Type npc_type;
+  string s = argv[counter];
+  if(s == "help" || s == "--help" || s == "-help" || s == "h"){
+    printf("calling convention: class level martial_type magic_type caster_types");
     printf("\nrequires all args to work");
     return 0;
   }
-  int level = atoi(argv[counter]);
-  counter++;
-  ENPC_Type npc_type;
-  string s = argv[counter];
-  //la for laborer, me for merchant, no for noble, fi for fighter,
-  // mu for magic user, gi for gish, mut for magic using theif, pr for priest,t for thief)\n");
-  if(s == "la"){npc_type = Laborer;}
+  else if(s == "la"){npc_type = Laborer;}
   else if(s == "me"){npc_type = Merchant;}
   else if(s == "no"){npc_type = Noble;}
   else if(s == "fi"){npc_type = Fighter;}
@@ -85,6 +80,11 @@ int called(int argc, const char ** argv){
   else if(s == "t"){npc_type = Thief;}
   else{return 1;}
   counter++;
+  int level = atoi(argv[counter]);
+  counter++;
+  s = argv[counter];
+  //la for laborer, me for merchant, no for noble, fi for fighter,
+  // mu for magic user, gi for gish, mut for magic using theif, pr for priest,t for thief)\n");
   MartialTypes_t Martial = MartialNONE;
   s = argv[counter];
   if(s == "om"){ Martial = OrganizedMelle;}

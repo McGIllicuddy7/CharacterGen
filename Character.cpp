@@ -63,7 +63,7 @@ int calculate_ac_and_per_bonus(int Level){
   int numexpert = Level/5*(Level>4);
   int nummastered = Level/10 * (Level>9);
   int numLegendary = Level/15 *(Level>14);
-  return 2*(numexpert>0+nummastered>0+numLegendary>0+1);
+  return 2*((numexpert>0)+(nummastered>0)+(numLegendary>0)+1);
 }
 void WeaponCalculation(NPC_T * out,MartialTypes_t Mt){
   if(Mt == MartialNONE){
@@ -791,132 +791,131 @@ void PrintNpc(FILE * f,NPC_T * NPC){
 }
 #define buffreset() memset(f, 0, 1000)
 #define line_done() out += f; buffreset();
-#define PrintSpellList(T) for(int i = 0; i<NPC->T.size(); i++){sprintf(f,"%s, ",NPC->T[i].c_str()); line_done()}
-#define PrintSpellSlots(T) if(NPC->InnateCaster){sprintf(f,"[%d slots]: ",GetElement(InnateSpellSlotsByLevel(NPC->Level*(NPC->Class == Magic_User)+NPC->Level/3*(NPC->Class != Magic_User)), T)); out += f;} else{sprintf(f,": "); line_done();}
+#define FPrintSpellList(T) for(int i = 0; i<NPC->T.size(); i++){snprintf(f,1000,"%s, ",NPC->T[i].c_str()); line_done()}
+#define FPrintSpellSlots(T) if(NPC->InnateCaster){snprintf(f,1000,"[%d slots]: ",GetElement(InnateSpellSlotsByLevel(NPC->Level*(NPC->Class == Magic_User)+NPC->Level/3*(NPC->Class != Magic_User)), T)); out += f;} else{snprintf(f,1000,": "); line_done();}
 std::string NPC_toString(NPC_T * NPC){
   std::string out = "";
   char f[1000] = {0};
-  sprintf(f,"%s\n",NPC->Name.c_str());
+  snprintf(f,1000,"%s\n",NPC->Name.c_str());
   line_done();
-  sprintf(f, "%s ",GenderLUT[NPC->Gender]);
+  snprintf(f,1000, "%s ",GenderLUT[NPC->Gender]);
   line_done();
-  sprintf(f,"%s ",TypeLUT[NPC->Class]);
+  snprintf(f,1000,"%s ",TypeLUT[NPC->Class]);
   line_done();
-  sprintf(f,"%s ",AncestryLut[NPC->Ancestry]);
+  snprintf(f,1000,"%s ",AncestryLut[NPC->Ancestry]);
   line_done();
-  sprintf(f, "%s Strength\n",StrLUT[NPC->Npc_strength]);
+  snprintf(f,1000, "%s Strength\n",StrLUT[NPC->Npc_strength]);
   line_done();
-  sprintf(f,"Level: %d\n",NPC->Level);
+  snprintf(f,1000,"Level: %d\n",NPC->Level);
   line_done();
-  sprintf(f,"Perception:+%d\n",NPC->Perception_Bonus);
+  snprintf(f,1000,"Perception:+%d\n",NPC->Perception_Bonus);
   line_done();
-  sprintf(f,"Hit Points:%d\n",NPC->HitPoints);
+  snprintf(f,1000,"Hit Points:%d\n",NPC->HitPoints);
   line_done();
-  sprintf(f,"AC:%d\n",NPC->ArmorClass);
+  snprintf(f,1000,"AC:%d\n",NPC->ArmorClass);
   line_done();
-  sprintf(f,"Strength: %d | Constitution: %d | Dexterity: %d | Intelligence: %d | Wisdom: %d | Charisma %d\n",NPC->Strength, NPC->Constitution,NPC->Dexterity,
+  snprintf(f,1000,"Strength: %d | Constitution: %d | Dexterity: %d | Intelligence: %d | Wisdom: %d | Charisma %d\n",NPC->Strength, NPC->Constitution,NPC->Dexterity,
           NPC->Intelligence,NPC->Wisdom, NPC->Charisma);
   line_done();
-  sprintf(f,"Reflex:+%d | Fortitude:+%d | Will:+%d\n", NPC->ReflexSave, NPC->FortitudeSave, NPC->WillSave);
-  sprintf(f,"Skills: Arcana:+%d, Atheletics:+%d, Crafting:+%d, Deception:+%d, Diplomacy:+%d, Intimidation:+%d, Lore:+%d, Medicine:+%d, Nature:+%d, Occultism:+%d, Performance:+%d, Religion:+%d, Society:+%d, Stealth:+%d, Survival:+%d, Thievery:+%d\n",
+  snprintf(f,1000,"Reflex:+%d | Fortitude:+%d | Will:+%d\n", NPC->ReflexSave, NPC->FortitudeSave, NPC->WillSave);
+  snprintf(f,1000,"Skills: Arcana:+%d, Atheletics:+%d, Crafting:+%d, Deception:+%d, Diplomacy:+%d, Intimidation:+%d, Lore:+%d, Medicine:+%d, Nature:+%d, Occultism:+%d, Performance:+%d, Religion:+%d, Society:+%d, Stealth:+%d, Survival:+%d, Thievery:+%d\n",
           NPC->Arcana, NPC->Athletics,NPC->Crafting, NPC->Deception, NPC->Diplomacy, NPC->Intimidation, NPC->Lore, NPC->Medicine,NPC->Nature, NPC->Occultism, NPC->Performance, NPC->Religion, NPC->Society,NPC->Stealth, NPC->Survival,NPC->Thievery);
   line_done();
-  sprintf(f,"\nAbilities and Features: ");
+  snprintf(f,1000,"\nAbilities and Features: ");
   line_done();
     for(int i = 0; i<NPC->SpecialFeaturesAndAbilities.size(); i++){
-      sprintf(f,"%s", NPC->SpecialFeaturesAndAbilities[i].c_str());
+      snprintf(f,1000,"%s", NPC->SpecialFeaturesAndAbilities[i].c_str());
       line_done();
-      sprintf(f,"\n"); 
+      snprintf(f,1000,"\n"); 
       line_done();
     }
-  sprintf(f,"Weapons: ");
+  snprintf(f,1000,"Weapons: ");
   line_done();
   for(int i = 0; i<5; i++){
     if(NPC->weapons[i].Name.size()>0){
       Weapon_T * t =&NPC->weapons[i];
-      sprintf(f,"%s +%d %s+%d(%s)\n",t->Name.c_str(), t->Bonus,t->DamageDie.c_str(), t->DamageBonus, t->Text.c_str());
+      snprintf(f,1000,"%s +%d %s+%d(%s)\n",t->Name.c_str(), t->Bonus,t->DamageDie.c_str(), t->DamageBonus, t->Text.c_str());
     }
   }
   if(NPC->Cantrips.size()>0){    
-    sprintf(f,"Cantrips: ");
+    snprintf(f,1000,"Cantrips: ");
     line_done();
     for(int i = 0; i<NPC->Cantrips.size(); i++){
-      sprintf(f,"%s, ",NPC->Cantrips[i].c_str());
+      snprintf(f,1000,"%s, ",NPC->Cantrips[i].c_str());
     }
   }
   if(NPC->FirstLevelSpells.size()>0){
-    sprintf(f,"\nFirst Level Spells");
+    snprintf(f,1000,"\nFirst Level Spells");
     line_done();
-    PrintSpellSlots(1);
-    PrintSpellList(FirstLevelSpells);
+    FPrintSpellSlots(1);
+    FPrintSpellList(FirstLevelSpells);
   }
   if(NPC->SecondLevelSpells.size()){
-    sprintf(f,"\nSecond Level Spells");
+    snprintf(f,1000,"\nSecond Level Spells");
     line_done();
-    PrintSpellSlots(2);
-    PrintSpellList(SecondLevelSpells);
+    FPrintSpellSlots(2);
+    FPrintSpellList(SecondLevelSpells);
   }
   if(NPC->ThirdLevelSpells.size()){
-    sprintf(f,"\nThird Level Spells");
+    snprintf(f,1000,"\nThird Level Spells");
     line_done();
-    PrintSpellSlots(3);
-    PrintSpellList(ThirdLevelSpells);
+    FPrintSpellSlots(3);
+    FPrintSpellList(ThirdLevelSpells);
   }
   if(NPC->FourthLevelSpells.size()){
-    sprintf(f,"\nFourth Level Spells");
+    snprintf(f,1000,"\nFourth Level Spells");
     line_done();
-    PrintSpellSlots(4);
-    PrintSpellList(FourthLevelSpells);
+    FPrintSpellSlots(4);
+    FPrintSpellList(FourthLevelSpells);
   }
   if(NPC->FifthLevelSpells.size()){
-    sprintf(f,"\nFifth Level Spells");
+    snprintf(f,1000,"\nFifth Level Spells");
     line_done();
-    PrintSpellSlots(5);
-    PrintSpellList(FifthLevelSpells);
+    FPrintSpellSlots(5);
+    FPrintSpellList(FifthLevelSpells);
   }
   if(NPC->SixthLevelSpells.size()){
-    sprintf(f,"\nSixth Level Spells");
+    snprintf(f,1000,"\nSixth Level Spells");
     line_done();
-    PrintSpellSlots(6);
-    PrintSpellList(SixthLevelSpells);
+    FPrintSpellSlots(6);
+    FPrintSpellList(SixthLevelSpells);
   }
   if(NPC->SeventhLevelSpells.size()){
-    sprintf(f,"\nSeventh Level Spells");
+    snprintf(f,1000,"\nSeventh Level Spells");
     line_done();
-    PrintSpellSlots(7);
-    PrintSpellList(SeventhLevelSpells);
+    FPrintSpellSlots(7);
+    FPrintSpellList(SeventhLevelSpells);
   }
   if(NPC->EightLevelSpells.size()){
-    sprintf(f,"\n Eigth Level Spells");
+    snprintf(f,1000,"\n Eigth Level Spells");
     line_done();
-    PrintSpellSlots(8);
-    PrintSpellList(EightLevelSpells);
+    FPrintSpellSlots(8);
+    FPrintSpellList(EightLevelSpells);
   }
   if(NPC->NinthLevelSpells.size()){
-    sprintf(f,"\nNinth Level Spells");
+    snprintf(f,1000,"\nNinth Level Spells");
     line_done();
-    PrintSpellSlots(9);
-    PrintSpellList(NinthLevelSpells);
+    FPrintSpellSlots(9);
+    FPrintSpellList(NinthLevelSpells);
   }
   if(NPC->TenthLevelSpells.size()){
-    sprintf(f,"\nTenth Level Spells");
+    snprintf(f,1000,"\nTenth Level Spells");
     line_done();
-    PrintSpellSlots(10);
-    PrintSpellList(TenthLevelSpells);
+    FPrintSpellSlots(10);
+    FPrintSpellList(TenthLevelSpells);
   }
-  sprintf(f,"\nPersonality: ");
+  snprintf(f,1000,"\nPersonality: ");
   for(int i =0 ; i<NPC->Personality.size(); i++){
-    sprintf(f,"%s, ", NPC->Personality[i].c_str());
+    snprintf(f,1000,"%s, ", NPC->Personality[i].c_str());
     line_done();
   }
   if(NPC->SpellBook.size()>0){
-    sprintf(f,"\nSpellbook: ");
+    snprintf(f,1000,"\nSpellbook: ");
     line_done();
   }
   for(int i =0; i<NPC->SpellBook.size(); i++){
-    sprintf(f,"%s,", NPC->SpellBook[i].c_str());
+    snprintf(f,1000,"%s,", NPC->SpellBook[i].c_str());
     line_done();
   }
-  //sprintf(f,"\n");
   return out;
 }

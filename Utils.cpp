@@ -13,7 +13,13 @@
 static unsigned long Seed = 0;
 unsigned long RandomInt(void){
   if(Seed == 0){
-    Seed = time(0);
+    struct timespec res;
+    long nano1;
+
+    /* read consecutive nanosecond values */
+    clock_gettime(CLOCK_REALTIME,&res);
+    nano1 = res.tv_nsec;
+    Seed = nano1;
   }
   Seed ^= Seed >> 7;
   Seed ^= Seed << 9;

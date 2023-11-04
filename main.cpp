@@ -66,6 +66,12 @@ int called(int argc, const char ** argv){
   string s = argv[counter];
   if(s == "help" || s == "--help" || s == "-help" || s == "h"){
     printf("calling convention: class level martial_type magic_type caster_types");
+    printf("class calling convention: la for laborer, me for merchant,no for noble, fi for fighter, mu for magic user, gi for gish,\n");
+    printf("  mut for magic using thief, pr for priest,t for thief.\n");
+    printf("level calling convention: a number greater than 0 and less than 21.\n");
+    printf("martial type calling convention: om for organized melle, dm for disorganized melle, or for organized ranged, dr for disorganized ranged.\n");
+    printf("arcane type calling convention: a for arcane, d for divine, o for occult, p for primal.\n");
+    printf("caster type calling convention: i for innate caster, p for prepared caster.\n");
     printf("\nrequires all args to work");
     return 0;
   }

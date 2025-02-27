@@ -38,8 +38,8 @@ double RandomDoubleInRange(double min, double max){
 int RollDice(const char * die){
   int cur = 0;
   int len = (int)strlen(die);
-  char nd[10];
-  char  ds[10];
+  char nd[10] = {0};
+  char  ds[10] = {0};
   for(int i = 0; i<len; i++){
     if(die[i]== 'd'){
       cur = i;
